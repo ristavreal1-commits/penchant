@@ -11,12 +11,14 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <repo.host>repo.papermc.io</repo.host>
+        <repo.path>repository/maven-public/</repo.path>
     </properties>
 
     <repositories>
         <repository>
             <id>papermc-repo</id>
-            <url>https://papermc.io</url>
+            <url>https://${repo.host}/${repo.path}</url>
         </repository>
     </repositories>
 
