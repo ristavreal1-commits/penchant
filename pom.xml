@@ -30,48 +30,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-</project>
-Используйте код с осторожностью.
-Теперь интерфейс не распознает это как обычную веб-ссылку и не обрежет путь, а Maven при сборке сам склеит правильный адрес https://papermc.io.
-Замените pom.xml на этот вариант — если возникнут любые другие ошибки при компиляции на GitHub Actions, пришлите текст из лога.
-PortableEnchant-1.0.0.jar
-File
-не работает
-В полученном архиве вместо скомпилированного файла PortableEnchant.class внутри лежит исходник src/main/java/zakra/penchant/PortableEnchant.java. Причина в том, что Maven по умолчанию ищет исходный код в src/main/java, но в вашем pom.xml (или репозитории) файл попал в корень проекта, а не в стандартную директорию для компиляции.
-Чтобы Maven гарантированно скомпилировал код в .class файлы, добавьте блок <build> с явным указанием <sourceDirectory> и плагином компилятора в ваш pom.xml:
-xml
-<project xmlns="http://apache.org"
-         xmlns:xsi="http://w3.org"
-         xsi:schemaLocation="http://apache.org http://apache.org">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>zakra</groupId>
-    <artifactId>PortableEnchant</artifactId>
-    <version>1.0.0</version>
-
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <repo.host>repo.papermc.io</repo.host>
-        <repo.path>repository/maven-public/</repo.path>
-    </properties>
-
-    <repositories>
-        <repository>
-            <id>papermc-repo</id>
-            <url>https://${repo.host}/${repo.path}</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.21.11-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
