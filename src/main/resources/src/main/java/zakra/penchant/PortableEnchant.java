@@ -11,8 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MenuType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,11 +30,14 @@ public final class PortableEnchant extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(this, this);
-        getLogger().info("PortableEnchant (30 lvl) успешно запущен для 1.21.11!");
+        if (getCommand("enchanttable") != null) {
+            getCommand("enchanttable").setExecutor(this);
+        }
+        getLogger().info("PortableEnchant (Spigot 1.21.11, 30 lvl) успешно запущен!");
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + "Эту команду может использовать только игрок.");
             return true;
@@ -46,7 +49,14 @@ public final class PortableEnchant extends JavaPlugin implements Listener {
         }
 
         portableUsers.add(player.getUniqueId());
-        player.openEnchanting(null, true);
+
+        // В Spigot 1.21.11 title передаётся обычной строкой String
+        MenuType.ENCHANTMENT.builder()
+                .title("Зачарование")
+                .checkReachable(false)
+                .build(player)
+                .open();
+
         return true;
     }
 
@@ -70,9 +80,9 @@ public final class PortableEnchant extends JavaPlugin implements Listener {
 
         EnchantmentOffer[] offers = event.getOffers();
         int[] costs = {
-                6 + random.nextInt(5),   // 1 слот: 6-10 уровень
-                15 + random.nextInt(6),  // 2 слот: 15-20 уровень
-                30                       // 3 слот: всегда 30 уровень
+                6 + random.nextInt(5),   // 1 слот: 6-10 lvl
+                15 + random.nextInt(6),  // 2 слот: 15-20 lvl
+                30                       // 3 слот: всегда 30 lvl
         };
 
         for (int i = 0; i < offers.length; i++) {
