@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,12 +51,11 @@ public final class PortableEnchant extends JavaPlugin implements Listener {
 
         portableUsers.add(player.getUniqueId());
 
-        // В Spigot 1.21.11 title передаётся обычной строкой String
-        MenuType.ENCHANTMENT.builder()
+        InventoryView view = MenuType.ENCHANTMENT.builder()
                 .title("Зачарование")
                 .checkReachable(false)
-                .build(player)
-                .open();
+                .build(player);
+        player.openInventory(view);
 
         return true;
     }
@@ -80,9 +80,9 @@ public final class PortableEnchant extends JavaPlugin implements Listener {
 
         EnchantmentOffer[] offers = event.getOffers();
         int[] costs = {
-                6 + random.nextInt(5),   // 1 слот: 6-10 lvl
-                15 + random.nextInt(6),  // 2 слот: 15-20 lvl
-                30                       // 3 слот: всегда 30 lvl
+                6 + random.nextInt(5),
+                15 + random.nextInt(6),
+                30
         };
 
         for (int i = 0; i < offers.length; i++) {
