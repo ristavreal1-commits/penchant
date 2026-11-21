@@ -4,15 +4,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.MenuType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public final class PortableEnchant extends JavaPlugin {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+public final class PortableEnchant extends JavaPlugin implements Listener {
+
+    private final Set<UUID> portableUsers = new HashSet<>();
 
     @Override
     public void onEnable() {
-        getLogger().info("PortableEnchant успешно запущен для 1.21.11!");
+        getServer().getPluginManager().registerEvents(this, this);
+        getLogger().info("PortableEnchant (30 lvl) успешно запущен для 1.21.11!");
     }
 
     @Override
@@ -27,11 +37,21 @@ public final class PortableEnchant extends JavaPlugin {
             return true;
         }
 
-        MenuType.ENCHANTMENT.builder()
-                .checkReachable(false)
-                .build(player)
-                .open();
-
+        portableUsers.add(player.getUniqueId());
+        player.openEnchanting(null, true);
         return true;
+    }
+
+    @EventHandler
+    public void onPrepareEnchant(PrepareItemEnchantEvent event) {
+        if (portableUsers.contains(event.getEnchanter().getUniqueId())) {
+            // 15 книжных полок = максимальный 30-й уровень зачарования
+            event.setEnchantmentBonus(15);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        portableUsers.remove(event.getPlayer().getUniqueId());
     }
 }
