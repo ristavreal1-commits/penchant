@@ -1,0 +1,14 @@
+name: PortableEnchant
+version: 1.0.0
+main: zakra.penchant.PortableEnchant
+api-version: '1.21'
+description: Открывает портативный стол зачарований по команде.
+commands:
+  enchanttable:
+    description: Открыть стол зачарований
+    aliases: [etable, penchant, enchant]
+    permission: portableenchant.use
+permissions:
+  portableenchant.use:
+    description: Доступ к команде стола зачарований
+    default: op
