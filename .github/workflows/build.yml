@@ -12,10 +12,17 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: Fix project structure
+        run: |
+          mkdir -p clean_build/src/main/java/zakra/penchant
+          mkdir -p clean_build/src/main/resources
+          find . -name "PortableEnchant.java" -exec cp {} clean_build/src/main/java/zakra/penchant/ \;
+          find . -name "plugin.yml" -exec cp {} clean_build/src/main/resources/ \;
+          cp pom.xml clean_build/
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file clean_build/pom.xml
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: PortableEnchant-1.21.11
-          path: target/*.jar
+          path: clean_build/target/*.jar
